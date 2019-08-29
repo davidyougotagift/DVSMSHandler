@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="test.david.com.myapplication">
+
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <provider
+            android:name=".SMSCOntentProvider"
+            android:authorities="com.smsreader.provider" />
+
+        <service
+            android:name=".SMSReaderService"
+            android:enabled="true" />
+
+        <service
+            android:name=".SMSSendService"
+            android:enabled="true" />
+
+        <receiver
+            android:name=".SMSBroadcastReciever"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".SMSSendResponseReciever">
+            <intent-filter>
+                <action android:name="test.david.com.INTENT_ACTION_SENT_RESPOSNE" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".SMSDeliveredResponseReciever"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="test.david.com.INTENT_ACTION_DELIVERED_RESPOSNE" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>
