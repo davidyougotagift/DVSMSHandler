@@ -28,6 +28,7 @@ public class Constants {
 
 
     public static final String QUERY_CREATE_TABLE_OUTBOX = "create table " + TABLE_OUTBOX + "(" + SMSOutboxColumns.COLUMN_ID + " integer primary key autoincrement, "
+            + SMSOutboxColumns.COLUMN_ID_SMS_PROVIDER + " integer, "
             + SMSOutboxColumns.COLUMN_ID_INBOX + " integer, "
             + SMSOutboxColumns.COLUMN_ADDRESS_FROM + " text, "
             + SMSOutboxColumns.COLUMN_ADDRESS_TO + " text, "
@@ -55,6 +56,7 @@ public class Constants {
 
     public static class SMSOutboxColumns {
         public static final String COLUMN_ID = "_id";
+        public static final String COLUMN_ID_SMS_PROVIDER = "column_id_sms_provider";
         public static final String COLUMN_ID_INBOX = "column_id_inbox";
         public static final String COLUMN_ADDRESS_FROM = "from_address";
         public static final String COLUMN_ADDRESS_TO = "to_address";

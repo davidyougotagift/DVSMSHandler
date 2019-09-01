@@ -126,12 +126,6 @@ public class MainActivity extends AppCompatActivity {
         if (hasSMSReadPermission()) {
             addInboxFragment();
         }
-        startSendService();
-    }
-
-    private void startSendService() {
-        Intent intent = new Intent(this, SMSSendService.class);
-        startService(intent);
     }
 
 }

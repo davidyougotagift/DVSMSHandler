@@ -25,6 +25,7 @@ public class SMSCOntentProvider extends ContentProvider {
     }
 
     private SMSDatabase mSmsDatabase;
+    private Object mOutboxAccessLock = new Object();
 
     @Override
     public boolean onCreate() {
@@ -46,7 +47,9 @@ public class SMSCOntentProvider extends ContentProvider {
                 break;
             case Constants.ID_OUTBOX:
                 queryBuilder.setTables(TABLE_OUTBOX);
-                cursor = queryBuilder.query(mSmsDatabase.getReadableDatabase(), projection, selection, selectionArgs, null, null, sortOrder);
+                synchronized (mOutboxAccessLock){
+                    cursor = queryBuilder.query(mSmsDatabase.getReadableDatabase(), projection, selection, selectionArgs, null, null, sortOrder);
+                }
                 cursor.setNotificationUri(getContext().getContentResolver(), uri);
                 break;
         }
@@ -78,7 +81,9 @@ public class SMSCOntentProvider extends ContentProvider {
                 break;
             case Constants.ID_OUTBOX:
                 table = TABLE_OUTBOX;
-                result = sqLiteDatabase.insert(table, null, values);
+                synchronized (mOutboxAccessLock){
+                    result = sqLiteDatabase.insert(table, null, values);
+                }
                 if (result != -1) {
                     getContext().getContentResolver().notifyChange(uri, null);
                 }
@@ -96,14 +101,17 @@ public class SMSCOntentProvider extends ContentProvider {
         int matchCode = URI_MATCHER.match(uri);
         switch (matchCode) {
             case Constants.ID_INBOX:
-                sqLiteDatabase.execSQL(Constants.QUERY_DROP_TABLE_INBOX);
+                sqLiteDatabase.delete(Constants.TABLE_INBOX, null, null);
                 break;
             case Constants.ID_OUTBOX:
-                sqLiteDatabase.execSQL(Constants.QUERY_DROP_TABLE_OUTBOX);
+                synchronized (mOutboxAccessLock){
+                    sqLiteDatabase.delete(Constants.TABLE_OUTBOX, null, null);
+                }
                 break;
         }
         return 0;
     }
+
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
@@ -115,7 +123,9 @@ public class SMSCOntentProvider extends ContentProvider {
                 updateCount = sqLiteDatabase.update(TABLE_INBOX, values, selection, selectionArgs);
                 break;
             case Constants.ID_OUTBOX:
-                updateCount = sqLiteDatabase.update(TABLE_OUTBOX, values, selection, selectionArgs);
+                synchronized (mOutboxAccessLock){
+                    updateCount = sqLiteDatabase.update(TABLE_OUTBOX, values, selection, selectionArgs);
+                }
                 break;
         }
         if (updateCount > 0) {

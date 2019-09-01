@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class SMSDatabase extends SQLiteOpenHelper {
 
     public static final String TAG = SMSDatabase.class.getSimpleName();
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
     private static final String DB_NAME = "sms_data";
 
     private Context mContext;

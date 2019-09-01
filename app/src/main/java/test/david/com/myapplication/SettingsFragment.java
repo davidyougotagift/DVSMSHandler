@@ -62,6 +62,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Utils.showToast(getActivity(), "Saved Details");
+                            getActivity().getContentResolver().delete(Constants.CONTENT_URI_OUTBOX, null, null);
+                            getActivity().getContentResolver().delete(Constants.CONTENT_URI_INBOX, null, null);
                             PreferenceData.setData(getActivity(), toNUmber, fromNumber, System.currentTimeMillis());
                             dialog.dismiss();
                         }
