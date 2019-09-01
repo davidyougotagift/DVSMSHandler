@@ -37,6 +37,7 @@ public class Constants {
             + SMSOutboxColumns.COLUMN_IS_SEND + " integer, "
             + SMSOutboxColumns.COLUMN_DATE_SENT + " integer, "
             + SMSOutboxColumns.COLUMN_RESPONSE_CODE_SEND + " integer, "
+            + SMSOutboxColumns.COLUMN_DATE_LAST_ATTEMPT_SEND + " integer, "
             + SMSOutboxColumns.COLUMN_IS_FAILED + " integer, "
             + SMSOutboxColumns.COLUMN_RESPONSE_CODE_FAILURE + " integer, "
             + SMSOutboxColumns.COLUMN_DATE_LAST_FAILED + " integer, "
@@ -65,6 +66,7 @@ public class Constants {
         public static final String COLUMN_IS_SEND = "is_send";
         public static final String COLUMN_DATE_SENT = "date_send";
         public static final String COLUMN_RESPONSE_CODE_SEND = "response_code_send";
+        public static final String COLUMN_DATE_LAST_ATTEMPT_SEND = "date_last_sent_attempt";
         public static final String COLUMN_IS_FAILED = "is_failed";
         public static final String COLUMN_RESPONSE_CODE_FAILURE = "response_code_failure";
         public static final String COLUMN_DATE_LAST_FAILED = "date_last_failed";

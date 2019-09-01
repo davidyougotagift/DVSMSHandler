@@ -44,6 +44,7 @@ public class SMSSendService extends IntentService {
         contentValues.put(Constants.SMSOutboxColumns.COLUMN_IS_SEND, 0);
         contentValues.put(Constants.SMSOutboxColumns.COLUMN_IS_FAILED, 0);
         contentValues.put(Constants.SMSOutboxColumns.COLUMN_IS_REQUEST_IN_FLIGHT, 1);
+        contentValues.put(Constants.SMSOutboxColumns.COLUMN_DATE_LAST_ATTEMPT_SEND, System.currentTimeMillis());
         getContentResolver().update(Constants.CONTENT_URI_OUTBOX
                 , contentValues, Constants.SMSOutboxColumns.COLUMN_ID + " = " + outboxID, null);
     }
@@ -53,7 +54,7 @@ public class SMSSendService extends IntentService {
         Intent intent = new Intent(this, SMSSendResponseReciever.class);
         intent.setAction("test.david.com.INTENT_ACTION_SENT_RESPOSNE");
         intent.putExtra(Constants.INTENT_DATA_OUTBOX_ID, outboxId);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int) outboxId, intent, 0);
         return pendingIntent;
     }
 
@@ -61,7 +62,7 @@ public class SMSSendService extends IntentService {
         Intent intent = new Intent(this, SMSDeliveredResponseReciever.class);
         intent.setAction("test.david.com.INTENT_ACTION_DELIVERED_RESPOSNE");
         intent.putExtra(Constants.INTENT_DATA_OUTBOX_ID, outboxId);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int) outboxId, intent, 0);
         return pendingIntent;
     }
 

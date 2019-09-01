@@ -9,9 +9,6 @@ import android.provider.BaseColumns;
 import android.provider.Telephony;
 import android.support.annotation.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class SMSReaderService extends IntentService {
 
     public static final String TAG = SMSReaderService.class.getSimpleName();
@@ -47,6 +44,29 @@ public class SMSReaderService extends IntentService {
     }
 
     private void cleanUpOutbox() {
+        String[] projection = new String[]{Constants.SMSOutboxColumns.COLUMN_ID, Constants.SMSOutboxColumns.COLUMN_DATE_LAST_ATTEMPT_SEND};
+        String selection = Constants.SMSOutboxColumns.COLUMN_IS_SEND + " = 0 AND "
+                + Constants.SMSOutboxColumns.COLUMN_IS_REQUEST_IN_FLIGHT + " = 1";
+        Cursor cursor = getContentResolver().query(Constants.CONTENT_URI_OUTBOX, projection, selection, null, null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            long lastAttemptedDate = cursor.getLong(cursor.getColumnIndex(Constants.SMSOutboxColumns.COLUMN_DATE_LAST_ATTEMPT_SEND));
+            long currentTime = System.currentTimeMillis();
+            int id = cursor.getInt(cursor.getColumnIndex(Constants.SMSOutboxColumns.COLUMN_ID));
+            if(lastAttemptedDate + (1000 * 60 * 2) <= currentTime){
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(Constants.SMSOutboxColumns.COLUMN_IS_SEND, 0);
+                contentValues.put(Constants.SMSOutboxColumns.COLUMN_IS_FAILED, 1);
+                contentValues.put(Constants.SMSOutboxColumns.COLUMN_IS_REQUEST_IN_FLIGHT, 0);
+                getContentResolver().update(Constants.CONTENT_URI_OUTBOX, contentValues,
+                        Constants.SMSOutboxColumns.COLUMN_ID_SMS_PROVIDER + " = " + id, null);
+            }
+            cursor.moveToNext();
+        }
+        cursor.close();
+    }
+
+    /*private void cleanUpOutbox() {
         List<Integer> inFLightRequestIds = new ArrayList<>();
         String[] projection = new String[]{Constants.SMSOutboxColumns.COLUMN_ID_SMS_PROVIDER};
         String selection = Constants.SMSOutboxColumns.COLUMN_IS_SEND + " = 0 AND "
@@ -58,10 +78,11 @@ public class SMSReaderService extends IntentService {
             cursor.moveToNext();
         }
         cursor.close();
-        projection = new String[]{Telephony.Sms.STATUS, Telephony.Sms.DATE_SENT};
+        //projection = new String[]{Telephony.Sms.STATUS, Telephony.Sms.DATE_SENT};
         selection = BaseColumns._ID + " = ?";
         for (int i = 0; i < inFLightRequestIds.size(); i++) {
-            cursor = getContentResolver().query(Telephony.Sms.CONTENT_URI, projection, selection, new String[]{Integer.toString(i)}, null);
+            cursor = getContentResolver().query(Telephony.Sms.CONTENT_URI, null, selection, new String[]{Integer.toString(inFLightRequestIds.get(i))}, null);
+            cursor.moveToFirst();
             int status = cursor.getInt(cursor.getColumnIndex(Telephony.Sms.STATUS));
             long dateSent = cursor.getLong(cursor.getColumnIndex(Telephony.Sms.DATE_SENT));
             ContentValues contentValues = new ContentValues();
@@ -71,23 +92,21 @@ public class SMSReaderService extends IntentService {
                 contentValues.put(Constants.SMSOutboxColumns.COLUMN_DATE_SENT, dateSent);
                 contentValues.put(Constants.SMSOutboxColumns.COLUMN_IS_REQUEST_IN_FLIGHT, 0);
                 getContentResolver().update(Constants.CONTENT_URI_OUTBOX, contentValues,
-                        Constants.SMSOutboxColumns.COLUMN_ID_SMS_PROVIDER + " = " + i, null);
+                        Constants.SMSOutboxColumns.COLUMN_ID_SMS_PROVIDER + " = " + inFLightRequestIds.get(i), null);
             } else if (status == Telephony.Sms.STATUS_FAILED) {
                 contentValues.put(Constants.SMSOutboxColumns.COLUMN_IS_SEND, 0);
                 contentValues.put(Constants.SMSOutboxColumns.COLUMN_IS_FAILED, 1);
                 contentValues.put(Constants.SMSOutboxColumns.COLUMN_IS_REQUEST_IN_FLIGHT, 0);
                 getContentResolver().update(Constants.CONTENT_URI_OUTBOX, contentValues,
-                        Constants.SMSOutboxColumns.COLUMN_ID_SMS_PROVIDER + " = " + i, null);
+                        Constants.SMSOutboxColumns.COLUMN_ID_SMS_PROVIDER + " = " + inFLightRequestIds.get(i), null);
 
             } else if (status == Telephony.Sms.STATUS_PENDING) {
 
             }
             cursor.close();
         }
-
-
     }
-
+*/
 
     private void insertToInbox(Cursor cursor) {
         long id = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
