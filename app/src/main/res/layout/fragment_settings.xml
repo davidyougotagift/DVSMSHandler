@@ -17,7 +17,8 @@
             android:id="@+id/edit_from"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/label_from" />
+            android:hint="@string/label_from"
+            android:singleLine="true" />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -33,7 +34,8 @@
             android:id="@+id/edit_to"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/label_to" />
+            android:hint="@string/label_to"
+            android:singleLine="true" />
 
     </android.support.design.widget.TextInputLayout>
 
