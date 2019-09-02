@@ -15,8 +15,10 @@ import android.widget.EditText;
 public class SettingsFragment extends Fragment implements View.OnClickListener {
 
     public static final String TAG = SettingsFragment.class.getSimpleName();
+
     private EditText mFromMob;
     private EditText mToMob;
+    private EditText mFormat;
     private Button mSave;
 
     public static SettingsFragment getInstance() {
@@ -38,11 +40,13 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initView(View view) {
+        mFormat = view.findViewById(R.id.edit_format);
         mFromMob = view.findViewById(R.id.edit_from);
         mToMob = view.findViewById(R.id.edit_to);
         mSave = view.findViewById(R.id.btn_save);
         mFromMob.setText(PreferenceData.getFromNumber(getActivity()));
         mToMob.setText(PreferenceData.getToNumber(getActivity()));
+        mFormat.setText(PreferenceData.getMessageFormat(getActivity()));
         mSave.setOnClickListener(this);
     }
 
@@ -53,10 +57,13 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
             case R.id.btn_save:
                 final String fromNumber = mFromMob.getText().toString();
                 final String toNUmber = mToMob.getText().toString();
+                final String format = mFormat.getText().toString();
                 if (TextUtils.isEmpty(fromNumber)) {
                     Utils.showErrorDialog(getActivity(), "Invalid \"From\" Number", "Error");
                 } else if (TextUtils.isEmpty(toNUmber)) {
                     Utils.showErrorDialog(getActivity(), "Invalid \"To\" Number", "Error");
+                } else if (TextUtils.isEmpty(format)) {
+                    Utils.showErrorDialog(getActivity(), "Message format cannot be empty", "Error");
                 } else {
                     Utils.showOKCancelDialog(getActivity(), "This will reset the app. Are you sure?", new DialogInterface.OnClickListener() {
                         @Override
@@ -64,7 +71,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                             Utils.showToast(getActivity(), "Saved Details");
                             getActivity().getContentResolver().delete(Constants.CONTENT_URI_OUTBOX, null, null);
                             getActivity().getContentResolver().delete(Constants.CONTENT_URI_INBOX, null, null);
-                            PreferenceData.setData(getActivity(), toNUmber, fromNumber, System.currentTimeMillis());
+                            PreferenceData.setData(getActivity(), toNUmber, fromNumber, System.currentTimeMillis(), format);
                             dialog.dismiss();
                         }
                     }, new DialogInterface.OnClickListener() {

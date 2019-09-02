@@ -22,8 +22,12 @@ public class SMSReaderService extends IntentService {
         if (PreferenceData.isPreferenceSet(this)) {
             cleanUpOutbox();
             String[] projection = new String[]{Constants.SMSInboxColumns.COLUMN_ID, Telephony.TextBasedSmsColumns.ADDRESS, Telephony.TextBasedSmsColumns.BODY, Telephony.TextBasedSmsColumns.DATE};
-            String selection = Telephony.TextBasedSmsColumns.DATE + " > " + PreferenceData.getLastUpdatedDate(this) + " AND "
-                    + Telephony.TextBasedSmsColumns.ADDRESS + " = " + "\"" + PreferenceData.getFromNumber(this) + "\"";
+            String selection = Telephony.TextBasedSmsColumns.DATE + " > "
+                    + PreferenceData.getLastUpdatedDate(this) + " AND "
+                    + Telephony.TextBasedSmsColumns.ADDRESS + " = " + "\""
+                    + PreferenceData.getFromNumber(this) + "\""
+                    + " AND " + Telephony.TextBasedSmsColumns.BODY + " LIKE "
+                    + "\"" + PreferenceData.getMessageFormat(this) + "\"";
             long lastUpdatedTime = System.currentTimeMillis();
             Cursor cursor = getContentResolver().query(Telephony.Sms.Inbox.CONTENT_URI,
                     projection,
@@ -53,7 +57,7 @@ public class SMSReaderService extends IntentService {
             long lastAttemptedDate = cursor.getLong(cursor.getColumnIndex(Constants.SMSOutboxColumns.COLUMN_DATE_LAST_ATTEMPT_SEND));
             long currentTime = System.currentTimeMillis();
             int id = cursor.getInt(cursor.getColumnIndex(Constants.SMSOutboxColumns.COLUMN_ID));
-            if(lastAttemptedDate + (1000 * 60 * 2) <= currentTime){
+            if (lastAttemptedDate + (1000 * 60 * 2) <= currentTime) {
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(Constants.SMSOutboxColumns.COLUMN_IS_SEND, 0);
                 contentValues.put(Constants.SMSOutboxColumns.COLUMN_IS_FAILED, 1);
