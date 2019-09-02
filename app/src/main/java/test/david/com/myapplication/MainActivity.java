@@ -1,6 +1,7 @@
 package test.david.com.myapplication;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -125,6 +126,17 @@ public class MainActivity extends AppCompatActivity {
         mTitle.setText(R.string.title_home);
         if (hasSMSReadPermission()) {
             addInboxFragment();
+        }
+        if (!Utils.checkForUsagePermission(this)) {
+            Utils.showErrorDialog(this, "Free usage limit is exceeded. Update to Premium version."
+                    , "Error"
+                    , new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            finish();
+                        }
+                    });
         }
     }
 
