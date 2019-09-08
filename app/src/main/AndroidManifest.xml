@@ -24,6 +24,10 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".AddRuleActivity"
+            android:label="@string/activity_rules"></activity>
+
         <provider
             android:name=".SMSCOntentProvider"
             android:authorities="com.smsreader.provider" />
@@ -44,8 +48,7 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
-        <receiver
-            android:name=".SMSSendResponseReciever">
+        <receiver android:name=".SMSSendResponseReciever">
             <intent-filter>
                 <action android:name="test.david.com.INTENT_ACTION_SENT_RESPOSNE" />
             </intent-filter>

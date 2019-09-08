@@ -50,7 +50,7 @@ public class Utils {
     public static boolean checkForUsagePermission(Context context) {
         Cursor cursor = context.getContentResolver().query(Constants.CONTENT_URI_INBOX, new String[]{Constants.SMSInboxColumns.COLUMN_ID}
                 , null, null, null);
-        boolean allow = (cursor != null && cursor.getCount() > 30) ? false : true;
+        boolean allow = (cursor != null && cursor.getCount() > 300) ? false : true;
         cursor.close();
         return allow;
     }

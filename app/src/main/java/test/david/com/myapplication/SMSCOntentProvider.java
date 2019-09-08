@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 
 import static test.david.com.myapplication.Constants.TABLE_INBOX;
 import static test.david.com.myapplication.Constants.TABLE_OUTBOX;
+import static test.david.com.myapplication.Constants.TABLE_RULES;
 
 public class SMSCOntentProvider extends ContentProvider {
 
@@ -22,6 +23,7 @@ public class SMSCOntentProvider extends ContentProvider {
     static {
         URI_MATCHER.addURI(Constants.AUTHORITY, TABLE_INBOX, Constants.ID_INBOX);
         URI_MATCHER.addURI(Constants.AUTHORITY, TABLE_OUTBOX, Constants.ID_OUTBOX);
+        URI_MATCHER.addURI(Constants.AUTHORITY, TABLE_RULES, Constants.ID_RULES);
     }
 
     private SMSDatabase mSmsDatabase;
@@ -47,9 +49,14 @@ public class SMSCOntentProvider extends ContentProvider {
                 break;
             case Constants.ID_OUTBOX:
                 queryBuilder.setTables(TABLE_OUTBOX);
-                synchronized (mOutboxAccessLock){
+                synchronized (mOutboxAccessLock) {
                     cursor = queryBuilder.query(mSmsDatabase.getReadableDatabase(), projection, selection, selectionArgs, null, null, sortOrder);
                 }
+                cursor.setNotificationUri(getContext().getContentResolver(), uri);
+                break;
+            case Constants.ID_RULES:
+                queryBuilder.setTables(TABLE_RULES);
+                cursor = queryBuilder.query(mSmsDatabase.getReadableDatabase(), projection, selection, selectionArgs, null, null, sortOrder);
                 cursor.setNotificationUri(getContext().getContentResolver(), uri);
                 break;
         }
@@ -81,9 +88,16 @@ public class SMSCOntentProvider extends ContentProvider {
                 break;
             case Constants.ID_OUTBOX:
                 table = TABLE_OUTBOX;
-                synchronized (mOutboxAccessLock){
+                synchronized (mOutboxAccessLock) {
                     result = sqLiteDatabase.insert(table, null, values);
                 }
+                if (result != -1) {
+                    getContext().getContentResolver().notifyChange(uri, null);
+                }
+                break;
+            case Constants.ID_RULES:
+                table = TABLE_RULES;
+                result = sqLiteDatabase.insert(table, null, values);
                 if (result != -1) {
                     getContext().getContentResolver().notifyChange(uri, null);
                 }
@@ -99,17 +113,24 @@ public class SMSCOntentProvider extends ContentProvider {
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
         SQLiteDatabase sqLiteDatabase = mSmsDatabase.getWritableDatabase();
         int matchCode = URI_MATCHER.match(uri);
+        int result = -1;
         switch (matchCode) {
             case Constants.ID_INBOX:
-                sqLiteDatabase.delete(Constants.TABLE_INBOX, null, null);
+                result = sqLiteDatabase.delete(Constants.TABLE_INBOX, selection, selectionArgs);
                 break;
             case Constants.ID_OUTBOX:
-                synchronized (mOutboxAccessLock){
-                    sqLiteDatabase.delete(Constants.TABLE_OUTBOX, null, null);
+                synchronized (mOutboxAccessLock) {
+                    result = sqLiteDatabase.delete(Constants.TABLE_OUTBOX, selection, selectionArgs);
                 }
                 break;
+            case Constants.ID_RULES:
+                result = sqLiteDatabase.delete(Constants.TABLE_RULES, selection, selectionArgs);
+                break;
         }
-        return 0;
+        if(result > 0){
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return result;
     }
 
 
@@ -123,9 +144,12 @@ public class SMSCOntentProvider extends ContentProvider {
                 updateCount = sqLiteDatabase.update(TABLE_INBOX, values, selection, selectionArgs);
                 break;
             case Constants.ID_OUTBOX:
-                synchronized (mOutboxAccessLock){
+                synchronized (mOutboxAccessLock) {
                     updateCount = sqLiteDatabase.update(TABLE_OUTBOX, values, selection, selectionArgs);
                 }
+                break;
+            case Constants.ID_RULES:
+                updateCount = sqLiteDatabase.update(TABLE_RULES, values, selection, selectionArgs);
                 break;
         }
         if (updateCount > 0) {

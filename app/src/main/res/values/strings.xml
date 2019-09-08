@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">DV SMSHandler</string>
+    <string name="activity_main">main</string>
+    <string name="activity_rules">rules</string>
     <string name="title_home">Inbox</string>
     <string name="title_dashboard">Outbox</string>
     <string name="title_notifications">Drafts</string>
@@ -8,4 +10,6 @@
     <string name="label_to">To</string>
     <string name="label_message_format">Message Format</string>
     <string name="label_save">Save</string>
+    <string name="label_add_rule">Add Rule</string>
+    <string name="label_delete">Delete</string>
 </resources>

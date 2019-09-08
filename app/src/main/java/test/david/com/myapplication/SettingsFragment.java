@@ -50,6 +50,10 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         mSave.setOnClickListener(this);
     }
 
+    public void addRule() {
+
+    }
+
     @Override
     public void onClick(View v) {
         int id = v.getId();

@@ -8,17 +8,20 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView mTitle;
     private static final int REQUEST_CODE_SMS_READ = 11;
+    private TextView mAddRule;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -53,21 +56,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addInboxFragment() {
+        mAddRule.setVisibility(View.GONE);
         startCopyService();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, InboxFragment.getInstance(), InboxFragment.TAG).commit();
 
     }
 
     private void addOutboxFragment() {
+        mAddRule.setVisibility(View.GONE);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, OutboxFragment.getInstance(), OutboxFragment.TAG).commit();
 
     }
 
     private void addSettingsFragment() {
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, SettingsFragment.getInstance(), SettingsFragment.TAG).commit();
+        mAddRule.setVisibility(View.VISIBLE);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, SettingsFragmentv2.getInstance(), SettingsFragmentv2.TAG).commit();
     }
 
     private void addDraftsFragment() {
+        mAddRule.setVisibility(View.GONE);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, DraftsFragment.getInstance(), DraftsFragment.TAG).commit();
 
     }
@@ -120,6 +127,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTitle = findViewById(R.id.id_txt);
+        mAddRule = findViewById(R.id.id_add_rule);
+        mAddRule.setVisibility(View.GONE);
+        mAddRule.setOnClickListener(this);
         setToolbar();
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -140,4 +150,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.id_add_rule:
+                Fragment fragment = getSupportFragmentManager().findFragmentByTag(SettingsFragmentv2.TAG);
+                if (fragment != null && fragment instanceof SettingsFragmentv2) {
+                    ((SettingsFragmentv2) fragment).addRule();
+                }
+                break;
+        }
+    }
 }

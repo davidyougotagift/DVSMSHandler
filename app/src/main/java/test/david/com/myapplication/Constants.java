@@ -8,11 +8,14 @@ public class Constants {
 
     public static final String TABLE_INBOX = "sms_inbox";
     public static final String TABLE_OUTBOX = "sms_outbox";
+    public static final String TABLE_RULES = "rules";
 
     public static final Uri CONTENT_URI_INBOX = Uri.parse("content://" + AUTHORITY + "/" + TABLE_INBOX);
     public static final Uri CONTENT_URI_OUTBOX = Uri.parse("content://" + AUTHORITY + "/" + TABLE_OUTBOX);
+    public static final Uri CONTENT_URI_RULES = Uri.parse("content://" + AUTHORITY + "/" + TABLE_RULES);
     public static final int ID_INBOX = 12;
     public static final int ID_OUTBOX = 13;
+    public static final int ID_RULES = 14;
 
     public static final String INTENT_DATA_OUTBOX_ID = "outbox_id";
 
@@ -45,6 +48,13 @@ public class Constants {
 
     public static final String QUERY_DROP_TABLE_OUTBOX = "DROP TABLE IF EXISTS " + TABLE_OUTBOX;
 
+    public static final String QUERY_CREATE_TABLE_RULES = "create table " + TABLE_RULES + "(" + RulesColumns.COLUMN_ID + " integer primary key autoincrement, "
+            + RulesColumns.COLUMN_FROM_NUMBER + " text, "
+            + RulesColumns.COLUMN_MESSAGE_FORMAT + " text, "
+            + RulesColumns.COLUMN_TO_NUMBER + " text )";
+
+    public static final String QUERY_DROP_TABLE_RULES = "DROP TABLE IF EXISTS " + TABLE_RULES;
+
 
     public static class SMSInboxColumns {
         public static final String COLUMN_ID = "_id";
@@ -72,6 +82,14 @@ public class Constants {
         public static final String COLUMN_DATE_LAST_FAILED = "date_last_failed";
         public static final String COLUMN_IS_REQUEST_IN_FLIGHT = "is_in_flight";
 
+    }
+
+
+    public static class RulesColumns {
+        public static final String COLUMN_ID = "_id";
+        public static final String COLUMN_FROM_NUMBER = "from_number";
+        public static final String COLUMN_MESSAGE_FORMAT = "message_format";
+        public static final String COLUMN_TO_NUMBER = "to_number";
     }
 
 
