@@ -1,8 +1,11 @@
 package test.david.com.myapplication;
 
 import android.app.IntentService;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
@@ -25,9 +28,15 @@ public class SMSSendService extends IntentService {
     public void onCreate() {
         super.onCreate();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationCompat.Builder noBuilder = new NotificationCompat.Builder(getApplicationContext(), "Sending Message...")
+            NotificationChannel notificationChannel = new NotificationChannel(getString(R.string.notification_channel_id), getString(R.string.app_name), NotificationManager.IMPORTANCE_NONE);
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(notificationChannel);
+            NotificationCompat.Builder noBuilder = new NotificationCompat.Builder(getApplicationContext(), notificationChannel.getId())
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
             noBuilder.setSmallIcon(R.mipmap.ic_launcher);
+            noBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+            noBuilder.setContentText(getString(R.string.label_sending_message));
             startForeground(ID_FOREGROUND_SERVICE, noBuilder.build());
         }
     }

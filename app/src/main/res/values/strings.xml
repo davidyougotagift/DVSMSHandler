@@ -14,4 +14,5 @@
     <string name="label_edit_rule">Edit Rule</string>
     <string name="label_delete">Delete</string>
     <string name="label_sending_message">Sending Message...</string>
+    <string name="notification_channel_id">dv_push_channel_1</string>
 </resources>
