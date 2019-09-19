@@ -2,7 +2,6 @@ package test.david.com.myapplication;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.text.TextUtils;
 
 public class PreferenceData {
 
@@ -28,13 +27,9 @@ public class PreferenceData {
         return getPreferences(context).getLong(KEY_LAST_UPDATED_DATE, getSavedTimeStamp(context));
     }
 
-    public static boolean isPreferenceSet(Context context) {
-        return TextUtils.isEmpty(getFromNumber(context)) ? false : true;
-    }
-
-    public static String getMessageFormat(Context context) {
+    /*public static String getMessageFormat(Context context) {
         return getPreferences(context).getString(KEY_MESSAGE_FORMAT, "");
-    }
+    }*/
 
     public static void setLastUpdatedDate(Context context, long timeStamp) {
         SharedPreferences.Editor editor = getPreferences(context).edit();
@@ -42,17 +37,23 @@ public class PreferenceData {
         editor.commit();
     }
 
-    public static String getToNumber(Context context) {
+    /*public static String getToNumber(Context context) {
         return getPreferences(context).getString(KEY_TO_MOBILE, "");
-    }
+    }*/
 
 
-    public static String getFromNumber(Context context) {
+    /*public static String getFromNumber(Context context) {
         return getPreferences(context).getString(KEY_FROM_MOBILE, "");
-    }
+    }*/
 
     public static long getSavedTimeStamp(Context context) {
         return getPreferences(context).getLong(KEY_TIME, 0);
+    }
+
+    public static void setSavedTimeStamp(Context context, long time) {
+        SharedPreferences.Editor editor = getPreferences(context).edit();
+        editor.putLong(KEY_TIME, time);
+        editor.commit();
     }
 
 

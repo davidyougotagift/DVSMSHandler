@@ -44,9 +44,9 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         mFromMob = view.findViewById(R.id.edit_from);
         mToMob = view.findViewById(R.id.edit_to);
         mSave = view.findViewById(R.id.btn_save);
-        mFromMob.setText(PreferenceData.getFromNumber(getActivity()));
-        mToMob.setText(PreferenceData.getToNumber(getActivity()));
-        mFormat.setText(PreferenceData.getMessageFormat(getActivity()));
+        //mFromMob.setText(PreferenceData.getFromNumber(getActivity()));
+        //mToMob.setText(PreferenceData.getToNumber(getActivity()));
+        //mFormat.setText(PreferenceData.getMessageFormat(getActivity()));
         mSave.setOnClickListener(this);
     }
 

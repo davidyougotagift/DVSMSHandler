@@ -64,9 +64,6 @@ public class AddRuleFragment extends Fragment implements View.OnClickListener, L
         mFromMob = view.findViewById(R.id.edit_from);
         mToMob = view.findViewById(R.id.edit_to);
         mSave = view.findViewById(R.id.btn_save);
-        mFromMob.setText(PreferenceData.getFromNumber(getActivity()));
-        mToMob.setText(PreferenceData.getToNumber(getActivity()));
-        mFormat.setText(PreferenceData.getMessageFormat(getActivity()));
         mSave.setOnClickListener(this);
         if (mRowId > 0) {
             queryRow(mRowId);
@@ -109,6 +106,9 @@ public class AddRuleFragment extends Fragment implements View.OnClickListener, L
                                 getActivity().getContentResolver().insert(Constants.CONTENT_URI_RULES, contentValues);
                             }
                             dialog.dismiss();
+                            if(PreferenceData.getSavedTimeStamp(getActivity()) <= 0){
+                                PreferenceData.setSavedTimeStamp(getActivity(), System.currentTimeMillis());
+                            }
                             getActivity().finish();
                         }
                     }, new DialogInterface.OnClickListener() {

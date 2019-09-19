@@ -43,7 +43,7 @@ public class DraftsListAdapter extends RecyclerView.Adapter<DraftsListAdapter.Dr
             String date = simpleDateFormat.format(new Date(mCursor.getLong(mCursor.getColumnIndex(Constants.SMSOutboxColumns.COLUMN_DATE_RECIEVED))));
             String source = mCursor.getString(mCursor.getColumnIndex(Constants.SMSOutboxColumns.COLUMN_ADDRESS_FROM));
             String message = mCursor.getString(mCursor.getColumnIndex(Constants.SMSOutboxColumns.COLUMN_BODY));
-            String destination = PreferenceData.getToNumber(mContext);
+            String destination = mCursor.getString(mCursor.getColumnIndex(Constants.SMSOutboxColumns.COLUMN_ADDRESS_TO));
             int isFailed = mCursor.getInt(mCursor.getColumnIndex(Constants.SMSOutboxColumns.COLUMN_IS_FAILED));
             long id = mCursor.getLong(mCursor.getColumnIndex(Constants.SMSOutboxColumns.COLUMN_ID));
             draftsViewHolder.bind(destination, source, date, (isFailed == 1) ? true : false, message, id);

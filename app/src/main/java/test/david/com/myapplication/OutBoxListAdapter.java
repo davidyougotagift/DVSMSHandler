@@ -39,7 +39,7 @@ public class OutBoxListAdapter extends RecyclerView.Adapter<OutBoxListAdapter.Ou
             String date = simpleDateFormat.format(new Date(mCursor.getLong(mCursor.getColumnIndex(Constants.SMSOutboxColumns.COLUMN_DATE_RECIEVED))));
             String source = mCursor.getString(mCursor.getColumnIndex(Constants.SMSOutboxColumns.COLUMN_ADDRESS_FROM));
             String message = mCursor.getString(mCursor.getColumnIndex(Constants.SMSOutboxColumns.COLUMN_BODY));
-            String destination = PreferenceData.getToNumber(mContext);
+            String destination = mCursor.getString(mCursor.getColumnIndex(Constants.SMSOutboxColumns.COLUMN_ADDRESS_TO));
             String sendDate = simpleDateFormat.format(new Date(mCursor.getLong(mCursor.getColumnIndex(Constants.SMSOutboxColumns.COLUMN_DATE_SENT))));
             draftsViewHolder.bind(destination, source, date, message, sendDate);
         }

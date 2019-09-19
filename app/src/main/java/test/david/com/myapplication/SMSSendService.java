@@ -5,7 +5,9 @@ import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsManager;
 
 public class SMSSendService extends IntentService {
@@ -13,8 +15,21 @@ public class SMSSendService extends IntentService {
 
     public static final String TAG = SMSSendService.class.getSimpleName();
 
+    private static int ID_FOREGROUND_SERVICE = 101;
+
     public SMSSendService() {
         super(TAG);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationCompat.Builder noBuilder = new NotificationCompat.Builder(getApplicationContext(), "Sending Message...")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+            noBuilder.setSmallIcon(R.mipmap.ic_launcher);
+            startForeground(ID_FOREGROUND_SERVICE, noBuilder.build());
+        }
     }
 
     @Override
